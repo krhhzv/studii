@@ -442,3 +442,65 @@ body {
     letter-spacing: 0.5px;
     margin-top: auto;
 }
+
+/* Topbar multi-buttons */
+.topbar-actions {
+    display: flex;
+    gap: 10px;
+}
+
+/* Timer status (focus / break text) */
+.timer-status {
+    margin-top: -10px;
+    font-family: var(--font-hand);
+    font-size: 16px;
+    opacity: 0.6;
+}
+
+/* Break mode color */
+.timer-break {
+    color: #6c8cff;
+}
+
+/* Custom session input */
+.time-input {
+    width: 80px;
+    font-size: 20px;
+    font-family: var(--font-hand);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    background: var(--card);
+    text-align: center;
+    padding: 6px;
+    box-shadow: 2px 2px 0px var(--border);
+}
+
+/* Soft UX note */
+.soft-note {
+    margin-top: 8px;
+    font-size: 14px;
+    opacity: 0.6;
+    font-family: var(--font-hand);
+}
+
+/* Optional: break mode subtle background shift */
+.app.break-mode {
+    background: #f4f7ff;
+}
+
+/* Small animation for mode change */
+.timer-big {
+    transition: color 0.3s ease, transform 0.2s ease;
+}
+
+/* Optional cycle badge */
+.cycle-badge {
+    font-family: var(--font-hand);
+    font-size: 14px;
+    padding: 4px 10px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    display: inline-block;
+    background: var(--accent-light);
+    margin-top: 8px;
+}
