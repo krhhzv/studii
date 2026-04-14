@@ -11,7 +11,7 @@
 --font-hand: 'Patrick Hand', cursive;
 }
 
-/* 🌙 DARK MODE (no vibe loss) */
+/* 🌙 DARK MODE */
 :root.dark {
 --bg: #121212;
 --card: #1e1e1e;
@@ -40,7 +40,7 @@ touch-action: manipulation;
 overscroll-behavior: none;
 }
 
-/* iOS native feel */
+/* iOS safe */
 body {
 display: flex;
 flex-direction: column;
@@ -57,7 +57,6 @@ flex-direction: column;
 max-width: 500px;
 margin: 0 auto;
 width: 100%;
-position: relative;
 overflow: hidden;
 padding-bottom: max(16px, env(safe-area-inset-bottom));
 }
@@ -99,32 +98,45 @@ transform: scale(0.9) rotate(-5deg);
 .content {
 flex: 1;
 overflow-y: auto;
-padding: 0 16px 16px;
+padding: 0 16px 20px;
 display: flex;
 flex-direction: column;
-gap: 12px;
+align-items: stretch;
+gap: 18px;
 scrollbar-width: none;
 -webkit-overflow-scrolling: touch;
 }
 
-.content::-webkit-scrollbar { display: none; }
+.content::-webkit-scrollbar {
+display: none;
+}
 
 /* ================= CARD ================= */
 .card {
+width: 100%;
 background: var(--card);
 border: 3px solid var(--border);
-border-radius: 24px;
-padding: 20px;
+border-radius: 26px;
+padding: 22px;
 box-shadow: var(--shadow);
 transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.card:hover {
-transform: translateY(-2px);
+.card + .card {
+margin-top: -4px;
 }
 
 .card:active {
-transform: scale(0.96) rotate(-1deg);
+transform: scale(0.97) rotate(-1deg);
+}
+
+.card-title {
+font-family: var(--font-hand);
+font-size: 24px;
+margin-bottom: 12px;
+display: flex;
+justify-content: space-between;
+align-items: center;
 }
 
 /* ================= SUBJECTS ================= */
@@ -173,17 +185,18 @@ font-size: 64px;
 text-align: center;
 font-family: 'Space Mono', monospace;
 font-weight: bold;
-padding: 30px 10px;
+padding: 28px 10px;
 animation: breathing 4s ease-in-out infinite;
 cursor: pointer;
+margin-bottom: 6px;
+letter-spacing: 2px;
 }
 
 @keyframes breathing {
-0%, 100% { transform: scale(1); }
-50% { transform: scale(1.03); }
+0%,100% { transform: scale(1); }
+50% { transform: scale(1.04); }
 }
 
-/* ✏️ EDITABLE TIMER */
 .timer-input {
 font-size: 64px;
 text-align: center;
@@ -199,8 +212,10 @@ animation: popIn 0.2s ease;
 /* ================= BUTTONS ================= */
 .controls {
 display: flex;
-gap: 15px;
+gap: 14px;
 justify-content: center;
+margin-top: -4px;
+margin-bottom: 4px;
 }
 
 .btn {
@@ -216,7 +231,7 @@ transition: all 0.1s;
 }
 
 .btn:active {
-transform: translate(2px, 2px) scale(0.95);
+transform: scale(0.92);
 box-shadow: none;
 }
 
@@ -226,6 +241,18 @@ color: white;
 }
 
 /* ================= PROGRESS ================= */
+.goal-section {
+display: flex;
+flex-direction: column;
+gap: 14px;
+}
+
+.goal-info {
+display: flex;
+justify-content: space-between;
+font-size: 18px;
+}
+
 .progress-container {
 height: 16px;
 background: #eee;
@@ -240,7 +267,78 @@ background: var(--accent);
 transition: width 0.5s ease-out;
 }
 
-/* ================= FOCUS SCREEN ================= */
+/* ================= PET ================= */
+.pet {
+font-size: 54px;
+text-align: center;
+animation: floaty 3s ease-in-out infinite;
+transition: transform 0.2s ease;
+}
+
+@keyframes floaty {
+0%,100% { transform: translateY(0); }
+50% { transform: translateY(-10px); }
+}
+
+/* emotions */
+.pet.happy { animation: jumpy 0.6s ease infinite; }
+.pet.sad { animation: droop 1s ease infinite; }
+.pet.sleepy { animation: sleepyFloat 3s ease infinite; opacity: 0.7; }
+.pet.excited { animation: shake 0.3s infinite; }
+
+@keyframes jumpy {
+0% { transform: translateY(0); }
+50% { transform: translateY(-18px) scale(1.1); }
+100% { transform: translateY(0); }
+}
+
+@keyframes droop {
+0%,100% { transform: translateY(0); }
+50% { transform: translateY(8px) scale(0.95); }
+}
+
+@keyframes sleepyFloat {
+0%,100% { transform: translateY(0); }
+50% { transform: translateY(-5px); }
+}
+
+@keyframes shake {
+0% { transform: rotate(-5deg); }
+50% { transform: rotate(5deg); }
+100% { transform: rotate(-5deg); }
+}
+
+/* pop */
+.pet.pop {
+animation: popBounce 0.4s ease;
+}
+
+@keyframes popBounce {
+0% { transform: scale(0.6); }
+50% { transform: scale(1.3); }
+100% { transform: scale(1); }
+}
+
+/* ================= STREAK ================= */
+.card.text-center {
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+}
+
+/* streak break */
+.streak-break {
+animation: explode 0.8s ease;
+}
+
+@keyframes explode {
+0% { transform: scale(1); opacity: 1; }
+50% { transform: scale(1.5) rotate(10deg); opacity: 0.5; }
+100% { transform: scale(0); opacity: 0; }
+}
+
+/* ================= FOCUS ================= */
 .focus-screen {
 position: fixed;
 inset: 0;
@@ -285,66 +383,12 @@ font-weight: bold;
 
 .focus-pet {
 font-size: 80px;
-animation: floating 3s infinite ease-in-out;
+animation: floaty 3s infinite ease-in-out;
 cursor: pointer;
-}
-
-@keyframes floating {
-0%, 100% { transform: translateY(0); }
-50% { transform: translateY(-15px); }
 }
 
 .focus-pet:active {
 transform: scale(1.2) rotate(10deg);
-}
-
-/* ================= MODAL ================= */
-.modal-overlay {
-position: fixed;
-inset: 0;
-background: rgba(0,0,0,0.1);
-backdrop-filter: blur(4px);
-display: flex;
-justify-content: center;
-align-items: center;
-z-index: 1000;
-}
-
-.modal {
-background: var(--card);
-border: 3px solid var(--border);
-border-radius: 28px;
-padding: 32px;
-box-shadow: var(--shadow);
-animation: popIn 0.3s ease;
-}
-
-@keyframes popIn {
-from { transform: scale(0.7) rotate(-10deg); opacity: 0; }
-to { transform: scale(1) rotate(0); opacity: 1; }
-}
-
-/* ================= TOAST ================= */
-.toast {
-position: fixed;
-bottom: 40px;
-left: 50%;
-transform: translateX(-50%);
-background: var(--border);
-color: white;
-padding: 12px 24px;
-border-radius: 50px;
-font-family: var(--font-hand);
-animation: slideUp 0.3s ease, fadeOut 0.3s ease 2s forwards;
-}
-
-@keyframes slideUp {
-from { transform: translate(-50%, 20px); opacity: 0; }
-to { transform: translate(-50%, 0); opacity: 1; }
-}
-
-@keyframes fadeOut {
-to { opacity: 0; }
 }
 
 /* ================= FOOTER ================= */
