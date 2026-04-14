@@ -1,56 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
 
-    <!-- Mobile Native Setup -->
+    <!-- 📱 Mobile Native Setup -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
-    <!-- PWA / App Feel -->
+    <!-- 🎨 Theme -->
     <meta name="theme-color" content="#fdfaf7">
+
+    <!-- 🍎 iOS App Feel -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="studii.">
 
-    <!-- SEO / Identity -->
+    <!-- 🧠 SEO -->
     <title>studii. | stay focused</title>
-    <meta name="description" content="focus, study, repeat. minimal study app.">
+    <meta name="description" content="focus, study, repeat. minimal aesthetic study app.">
 
-    <!-- Manifest -->
+    <!-- 📲 PWA -->
     <link rel="manifest" href="manifest.json">
 
-    <!-- Icons (REQUIRED for PWA install) -->
+    <!-- 🖼️ Icons -->
     <link rel="apple-touch-icon" href="icon.png">
     <link rel="icon" href="icon.png">
 
-    <!-- Fonts -->
+    <!-- 🔤 Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&family=Patrick+Hand&family=Space+Mono:wght@700&display=swap" rel="stylesheet">
 
-    <!-- Styles -->
+    <!-- 🎨 Styles -->
     <link rel="stylesheet" href="style.css">
 </head>
 
+
+
 <body>
-    <!-- ROOT APP -->
+
+    <!-- 🧱 ROOT APP -->
     <div id="root"></div>
 
-    <!-- Audio Feedback -->
+
+
+    <!-- 🔊 SOUND SYSTEM -->
     <audio id="clickSound" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"></audio>
     <audio id="doneSound" src="https://assets.mixkit.co/active_storage/sfx/1122/1122-preview.mp3"></audio>
 
-    <!-- App Script -->
+
+
+    <!-- ⚙️ APP LOGIC -->
     <script type="module" src="app.js"></script>
 
-    <!-- Service Worker (PWA) -->
+
+
+    <!-- 📲 SERVICE WORKER -->
     <script>
         if ('serviceWorker' in navigator) {
+
             window.addEventListener('load', () => {
+
                 navigator.serviceWorker.register('./sw.js')
-                    .then(() => console.log("SW registered"))
-                    .catch(() => console.log("SW failed"));
+                    .then(() => {
+                        console.log("✅ Service Worker Registered");
+                    })
+                    .catch(() => {
+                        console.log("❌ Service Worker Failed");
+                    });
+
             });
+
         }
     </script>
+
+
+
+    <!-- 🌙 DARK MODE AUTO (optional smart touch) -->
+    <script>
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+        if (prefersDark) {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
+
+
+
 </body>
+
 </html>
