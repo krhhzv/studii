@@ -11,22 +11,10 @@
 --font-hand: 'Patrick Hand', cursive;
 }
 
-/* 🌙 DARK MODE */
-:root.dark {
---bg: #121212;
---card: #1e1e1e;
---text: #f5f5f5;
---accent: #ff8fa3;
---accent-light: #3a2a2f;
---border: #ffffff;
---shadow: 4px 4px 0px var(--border);
-}
-
 /* ================= GLOBAL ================= */
 * {
 box-sizing: border-box;
 -webkit-tap-highlight-color: transparent;
-user-select: none;
 }
 
 html, body, #root {
@@ -36,34 +24,26 @@ background: var(--bg);
 color: var(--text);
 font-family: var(--font-main);
 overflow: hidden;
-touch-action: manipulation;
-overscroll-behavior: none;
-}
-
-/* iOS safe */
-body {
-display: flex;
-flex-direction: column;
-padding-top: env(safe-area-inset-top);
-padding-bottom: env(safe-area-inset-bottom);
 }
 
 /* ================= APP ================= */
 .app {
+width: 100%;
+max-width: 100%;
+margin: 0;
+
 height: 100vh;
 height: 100svh;
+
 display: flex;
 flex-direction: column;
-max-width: 500px;
-margin: 0 auto;
-width: 100%;
-overflow: hidden;
-padding-bottom: max(16px, env(safe-area-inset-bottom));
+
+padding: 0 16px;
 }
 
 /* ================= HEADER ================= */
 .topbar {
-padding: 20px;
+padding: 20px 0;
 display: flex;
 justify-content: space-between;
 align-items: center;
@@ -71,40 +51,39 @@ align-items: center;
 
 .logo {
 font-family: var(--font-hand);
-font-size: 32px;
+font-size: 30px;
 font-weight: bold;
 }
 
 .profile-btn {
-width: 44px;
-height: 44px;
-background: var(--card);
+width: 42px;
+height: 42px;
 border: 2px solid var(--border);
 border-radius: 50%;
 display: flex;
-justify-content: center;
 align-items: center;
-font-size: 20px;
+justify-content: center;
+background: var(--card);
+box-shadow: 2px 2px 0 var(--border);
 cursor: pointer;
-box-shadow: 2px 2px 0px var(--border);
-transition: all 0.15s ease;
 }
 
 .profile-btn:active {
-transform: scale(0.9) rotate(-5deg);
+transform: scale(0.92);
 }
 
 /* ================= CONTENT ================= */
 .content {
 flex: 1;
 overflow-y: auto;
-padding: 0 16px 20px;
+
 display: flex;
 flex-direction: column;
-align-items: stretch;
-gap: 18px;
+
+gap: 14px;
+padding-bottom: 20px;
+
 scrollbar-width: none;
--webkit-overflow-scrolling: touch;
 }
 
 .content::-webkit-scrollbar {
@@ -115,28 +94,30 @@ display: none;
 .card {
 width: 100%;
 background: var(--card);
-border: 3px solid var(--border);
-border-radius: 26px;
-padding: 22px;
-box-shadow: var(--shadow);
-transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
 
-.card + .card {
-margin-top: -4px;
+border: 3px solid var(--border);
+border-radius: 24px;
+
+padding: 20px;
+
+box-shadow: var(--shadow);
+
+transition: transform 0.15s ease;
 }
 
 .card:active {
-transform: scale(0.97) rotate(-1deg);
+transform: scale(0.97);
 }
 
 .card-title {
 font-family: var(--font-hand);
-font-size: 24px;
-margin-bottom: 12px;
+font-size: 22px;
+
 display: flex;
 justify-content: space-between;
 align-items: center;
+
+margin-bottom: 12px;
 }
 
 /* ================= SUBJECTS ================= */
@@ -150,88 +131,72 @@ gap: 10px;
 padding: 8px 16px;
 border: 2px solid var(--border);
 border-radius: 14px;
+
 font-family: var(--font-hand);
-font-size: 18px;
+font-size: 17px;
+
 cursor: pointer;
 background: var(--card);
-transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-animation: subPopIn 0.3s ease;
-}
 
-@keyframes subPopIn {
-from { transform: scale(0.7) rotate(-5deg); opacity: 0; }
-to { transform: scale(1) rotate(0); opacity: 1; }
+transition: transform 0.15s ease;
 }
 
 .sub.active {
 background: var(--accent-light);
-transform: translateY(-2px);
-box-shadow: 2px 2px 0px var(--border);
 }
 
 .sub:active {
-transform: scale(0.85) rotate(3deg);
-}
-
-.sub.removing {
-opacity: 0;
-transform: scale(0.2) rotate(20deg);
-pointer-events: none;
+transform: scale(0.9);
 }
 
 /* ================= TIMER ================= */
 .timer-big {
-font-size: 64px;
+font-size: 60px;
 text-align: center;
 font-family: 'Space Mono', monospace;
 font-weight: bold;
-padding: 28px 10px;
-animation: breathing 4s ease-in-out infinite;
-cursor: pointer;
-margin-bottom: 6px;
-letter-spacing: 2px;
-}
 
-@keyframes breathing {
-0%,100% { transform: scale(1); }
-50% { transform: scale(1.04); }
+padding: 24px 10px;
+cursor: pointer;
 }
 
 .timer-input {
-font-size: 64px;
+font-size: 60px;
 text-align: center;
 font-family: 'Space Mono', monospace;
 font-weight: bold;
+
 border: none;
 outline: none;
 background: transparent;
 width: 100%;
-animation: popIn 0.2s ease;
 }
 
-/* ================= BUTTONS ================= */
+/* ================= CONTROLS ================= */
 .controls {
 display: flex;
-gap: 14px;
 justify-content: center;
-margin-top: -4px;
-margin-bottom: 4px;
+gap: 12px;
+margin-top: 4px;
 }
 
 .btn {
 font-family: var(--font-hand);
-font-size: 20px;
-padding: 14px 24px;
+font-size: 18px;
+
+padding: 12px 20px;
+
 border: 2px solid var(--border);
-border-radius: 16px;
+border-radius: 14px;
+
 background: var(--card);
 cursor: pointer;
-box-shadow: 3px 3px 0px var(--border);
-transition: all 0.1s;
+
+box-shadow: 3px 3px 0 var(--border);
 }
 
 .btn:active {
-transform: scale(0.92);
+transform: scale(0.9);
 box-shadow: none;
 }
 
@@ -240,171 +205,154 @@ background: var(--accent);
 color: white;
 }
 
-/* ================= PROGRESS ================= */
-.goal-section {
-display: flex;
-flex-direction: column;
-gap: 14px;
-}
-
-.goal-info {
-display: flex;
-justify-content: space-between;
-font-size: 18px;
-}
-
-.progress-container {
-height: 16px;
-background: #eee;
-border: 2px solid var(--border);
-border-radius: 8px;
-overflow: hidden;
-}
-
-.progress-fill {
-height: 100%;
-background: var(--accent);
-transition: width 0.5s ease-out;
-}
-
 /* ================= PET ================= */
 .pet {
-font-size: 54px;
+font-size: 48px;
 text-align: center;
-animation: floaty 3s ease-in-out infinite;
-transition: transform 0.2s ease;
+
+margin: 8px 0;
+
+animation: floatSlow 4s ease-in-out infinite;
 }
 
-@keyframes floaty {
+@keyframes floatSlow {
 0%,100% { transform: translateY(0); }
-50% { transform: translateY(-10px); }
+50% { transform: translateY(-6px); }
 }
 
-/* emotions */
-.pet.happy { animation: jumpy 0.6s ease infinite; }
-.pet.sad { animation: droop 1s ease infinite; }
-.pet.sleepy { animation: sleepyFloat 3s ease infinite; opacity: 0.7; }
-.pet.excited { animation: shake 0.3s infinite; }
-
-@keyframes jumpy {
-0% { transform: translateY(0); }
-50% { transform: translateY(-18px) scale(1.1); }
-100% { transform: translateY(0); }
-}
-
-@keyframes droop {
-0%,100% { transform: translateY(0); }
-50% { transform: translateY(8px) scale(0.95); }
-}
-
-@keyframes sleepyFloat {
-0%,100% { transform: translateY(0); }
-50% { transform: translateY(-5px); }
-}
-
-@keyframes shake {
-0% { transform: rotate(-5deg); }
-50% { transform: rotate(5deg); }
-100% { transform: rotate(-5deg); }
-}
-
-/* pop */
-.pet.pop {
-animation: popBounce 0.4s ease;
-}
-
-@keyframes popBounce {
-0% { transform: scale(0.6); }
-50% { transform: scale(1.3); }
-100% { transform: scale(1); }
+/* ================= GOAL ================= */
+.card small {
+opacity: 0.6;
 }
 
 /* ================= STREAK ================= */
 .card.text-center {
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
+text-align: center;
 }
 
-/* streak break */
-.streak-break {
-animation: explode 0.8s ease;
-}
-
-@keyframes explode {
-0% { transform: scale(1); opacity: 1; }
-50% { transform: scale(1.5) rotate(10deg); opacity: 0.5; }
-100% { transform: scale(0); opacity: 0; }
+.card.text-center div {
+margin-bottom: 4px;
 }
 
 /* ================= FOCUS ================= */
 .focus-screen {
 position: fixed;
 inset: 0;
+
 background: var(--bg);
-z-index: 100;
+
 display: flex;
 flex-direction: column;
-padding: 40px 20px;
-animation: fadeIn 0.3s ease;
+
+padding: 30px 16px;
+
+animation: fadeIn 0.25s ease;
 }
 
 @keyframes fadeIn {
-from { opacity: 0; transform: scale(1.1); }
-to { opacity: 1; transform: scale(1); }
+from { opacity: 0; transform: translateY(10px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+.focus-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+
+margin-bottom: 20px;
+}
+
+.focus-body {
+flex: 1;
+
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+
+gap: 20px;
 }
 
 .focus-circle {
-width: 240px;
-height: 240px;
-border: 4px dashed var(--accent);
+width: 220px;
+height: 220px;
+
+border: 3px dashed var(--accent);
 border-radius: 50%;
+
 display: flex;
-justify-content: center;
 align-items: center;
-animation: rotate 20s linear infinite paused;
-}
-
-.focus-circle.running {
-animation-play-state: running;
-}
-
-@keyframes rotate {
-from { transform: rotate(0deg); }
-to { transform: rotate(360deg); }
+justify-content: center;
 }
 
 .focus-time {
-font-size: 60px;
+font-size: 54px;
 font-family: 'Space Mono', monospace;
 font-weight: bold;
-}
-
-.focus-pet {
-font-size: 80px;
-animation: floaty 3s infinite ease-in-out;
 cursor: pointer;
 }
 
-.focus-pet:active {
-transform: scale(1.2) rotate(10deg);
+.focus-pet {
+font-size: 60px;
+}
+
+/* ================= STATS ================= */
+.graph {
+display: flex;
+align-items: flex-end;
+height: 180px;
+gap: 6px;
+padding-top: 10px;
+}
+
+.bar-wrap {
+flex: 1;
+display: flex;
+flex-direction: column;
+align-items: center;
+}
+
+.bar {
+width: 100%;
+background: var(--accent-light);
+border: 2px solid var(--border);
+border-bottom: none;
+border-radius: 8px 8px 0 0;
+}
+
+.bar-label {
+font-size: 11px;
+margin-top: 6px;
+opacity: 0.6;
 }
 
 /* ================= FOOTER ================= */
 .footer {
-padding: 10px;
 text-align: center;
 font-size: 11px;
-opacity: 0.3;
-letter-spacing: 0.5px;
+opacity: 0.4;
+padding: 10px 0;
 }
 
-/* ================= MOBILE ================= */
+/* ================= TRANSITIONS ================= */
+.screen {
+animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+from {
+opacity: 0;
+transform: translateX(20px);
+}
+to {
+opacity: 1;
+transform: translateX(0);
+}
+}
+
+/* ================= SMALL DEVICES ================= */
 @media (max-width: 400px) {
-.timer-big { font-size: 52px; }
-.timer-input { font-size: 52px; }
-.focus-circle { width: 200px; height: 200px; }
-.focus-time { font-size: 50px; }
-.focus-pet { font-size: 60px; }
+.timer-big { font-size: 50px; }
+.timer-input { font-size: 50px; }
+.focus-time { font-size: 46px; }
 }
