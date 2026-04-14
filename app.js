@@ -53,7 +53,6 @@ const copyOptions = [
 
 // --- COMPONENTS ---
 
-// Stats Screen
 const Stats = ({ setScreen }) => {
     const [weekly, setWeekly] = useState({});
     useEffect(() => {
@@ -87,214 +86,196 @@ const Stats = ({ setScreen }) => {
     );
 };
 
-// Focus Screen (Full screen timer)
-const Focus = ({ setScreen, time, running, setRunning, setTime, formatTime }) => {
+const Focus = ({ setScreen, time, running, setRunning, setTime, formatTime, mode }) => {
     return React.createElement('div', { className: 'focus-screen' },
         React.createElement('div', { className: 'focus-header' },
             React.createElement('button', { className: 'btn', onClick: () => setScreen('home') }, '← back'),
-            React.createElement('div', { className: 'logo' }, 'focus.')
+            React.createElement('div', { className: 'logo' }, mode === "work" ? 'focus.' : 'break.')
         ),
-            React.createElement('div', { className: 'focus-body' },
-                React.createElement('div', { className: `focus-circle ${running ? 'running' : ''}` },
-                    React.createElement('div', { className: 'focus-time' }, formatTime(time))
-                ),
-                React.createElement('div', { 
-                    className: 'focus-pet',
-                    onClick: (e) => {
-                        e.target.style.transform = 'scale(1.4) rotate(15deg)';
-                        setTimeout(() => e.target.style.transform = '', 200);
+        React.createElement('div', { className: 'focus-body' },
+            React.createElement('div', { className: `focus-circle ${running ? 'running' : ''}` },
+                React.createElement('div', { className: 'focus-time' }, formatTime(time))
+            ),
+            React.createElement('div', { className: 'focus-pet' },
+                mode === "work"
+                    ? (time > 900 ? "🐣" : (time > 300 ? "🐥" : "🐤"))
+                    : "☕"
+            ),
+            React.createElement('div', { className: 'controls' },
+                React.createElement('button', {
+                    className: `btn ${running ? '' : 'btn-primary'}`,
+                    onClick: () => setRunning(!running)
+                }, running ? '⏸ pause' : '▶ start'),
+                React.createElement('button', {
+                    className: 'btn',
+                    onClick: () => {
+                        setRunning(false);
+                        setTime(mode === "work"
+                            ? (Number(localStorage.getItem("customTime")) || 1500)
+                            : 300
+                        );
                     }
-                }, time > 900 ? "🐣" : (time > 300 ? "🐥" : "🐤")),
-                React.createElement('div', { className: 'controls' },
-                React.createElement('button', { className: `btn ${running ? '' : 'btn-primary'}`, onClick: () => setRunning(!running) }, 
-                    running ? '⏸ pause' : '▶ start'
-                ),
-                React.createElement('button', { className: 'btn', onClick: () => { setRunning(false); setTime(1500); } }, '↺ reset')
+                }, '↺ reset')
             )
         )
     );
 };
 
-// Home Screen
-const Home = ({ setScreen, time, running, setRunning, setTime, formatTime, subjects, setSubjects, selected, setSelected, streak, dailyGoal, setDailyGoal, todayMinutes, onRemove }) => {
-    
-    const addSubject = () => {
-        const s = prompt("new subject?");
-        if (s) {
-            const newSub = { id: Date.now().toString(), name: limitText(cleanInput(s)) };
-            setSubjects([...subjects, newSub]);
-            if (!selected) setSelected(newSub);
-        }
-    };
-
-    const renameSubject = (sub) => {
-        const n = prompt("rename", sub.name);
-        if (n) setSubjects(subjects.map(s => s.id === sub.id ? { ...s, name: limitText(cleanInput(n)) } : s));
-    };
+const Home = (props) => {
+    const {
+        setScreen, time, running, setRunning, setTime, formatTime,
+        subjects, setSubjects, selected, setSelected,
+        streak, dailyGoal, setDailyGoal, todayMinutes,
+        onRemove, mode, cycle
+    } = props;
 
     return React.createElement('div', { className: 'content' },
+
         React.createElement('div', { className: 'topbar' },
             React.createElement('div', { className: 'logo' }, 'studii.'),
-            React.createElement('div', { className: 'profile-btn', onClick: () => setScreen('stats') }, '📊')
-        ),
+            React.createElement('div', { className: 'topbar-actions' },
 
-        React.createElement('div', { className: 'card' },
-            React.createElement('div', { className: 'card-title' }, 'subjects', React.createElement('span', { onClick: addSubject, style: {cursor:'pointer', padding: '10px'} }, '+')),
-            React.createElement('div', { className: 'subjects' },
-                subjects.length > 0 ? subjects.map((s) => React.createElement(SubjectChip, {
-                    key: s.id,
-                    s: s,
-                    selected: selected,
-                    setSelected: setSelected,
-                    onLongPress: onRemove
-                })) : React.createElement('div', { className: 'empty-state' }, 
-                    'no subjects left 👀', 
-                    React.createElement('br'), 
-                    'add one to start ✿'
-                )
+                React.createElement('div', {
+                    className: 'profile-btn',
+                    onClick: () => {
+                        const subject = selected?.name || "";
+                        window.location.href = `https://krhhzv.github.io/studii-book/?subject=${encodeURIComponent(subject)}`;
+                    }
+                }, '📓'),
+
+                React.createElement('div', {
+                    className: 'profile-btn',
+                    onClick: () => setScreen('stats')
+                }, '📊')
             )
         ),
 
         React.createElement('div', { className: 'card text-center', onClick: () => setScreen('focus'), style: {cursor: 'pointer'} },
-            React.createElement('div', { className: 'timer-big' }, formatTime(time)),
-            React.createElement('div', { style: {marginTop: '-20px', opacity: 0.5, fontSize: '14px'} }, 'tap to expand')
-        ),
+            React.createElement('div', {
+                className: `timer-big ${mode === "break" ? 'timer-break' : ''}`
+            }, formatTime(time)),
 
-        React.createElement('div', { className: 'controls' },
-            React.createElement('button', { className: `btn ${running ? '' : 'btn-primary'}`, onClick: () => { setRunning(!running); playSound('clickSound'); } }, 
-                running ? '⏸ pause' : '▶ start'
-            ),
-            React.createElement('button', { className: 'btn', onClick: () => { setRunning(false); setTime(1500); playSound('clickSound'); } }, '↺ reset')
-        ),
-
-        React.createElement('div', { className: 'card' },
-            React.createElement('div', { className: 'goal-section' },
-                React.createElement('div', { className: 'goal-info' }, 
-                    React.createElement('span', null, 'daily goal'),
-                    React.createElement('span', null, `${todayMinutes}/${dailyGoal} min`)
-                ),
-                React.createElement('div', { className: 'progress-container' },
-                    React.createElement('div', { className: 'progress-fill', style: { width: `${Math.min((todayMinutes / dailyGoal) * 100, 100)}%` } })
-                ),
-                React.createElement('div', { style: {textAlign: 'right'} },
-                    React.createElement('input', {
-                        type: 'number',
-                        value: dailyGoal,
-                        onChange: (e) => setDailyGoal(Math.max(1, parseInt(e.target.value) || 1)),
-                        style: { width: '50px', border: 'none', background: 'transparent', textAlign: 'right', fontWeight: 'bold', fontFamily: 'inherit' }
-                    }),
-                    ' min'
-                )
+            React.createElement('div', { className: 'timer-status' },
+                mode === "work"
+                    ? `focus ✿ cycle ${cycle}`
+                    : "break ☕ take it slow"
             )
         ),
 
-        React.createElement('div', { className: 'card text-center' },
-            React.createElement('span', { style: { fontSize: '24px' } }, '🔥 streak: ', streak, ' days')
+        React.createElement('div', { className: 'controls' },
+            React.createElement('button', {
+                className: `btn ${running ? '' : 'btn-primary'}`,
+                onClick: () => { setRunning(!running); playSound('clickSound'); }
+            }, running ? '⏸ pause' : '▶ start'),
+
+            React.createElement('button', {
+                className: 'btn',
+                onClick: () => {
+                    setRunning(false);
+                    setTime(mode === "work"
+                        ? (Number(localStorage.getItem("customTime")) || 1500)
+                        : 300
+                    );
+                }
+            }, '↺ reset')
         ),
 
-        React.createElement('div', { className: 'footer' }, 'built by a backbencher lol 😼.')
+        React.createElement('div', { className: 'card' },
+            React.createElement('div', { className: 'card-title' }, 'session time ✿'),
+
+            React.createElement('input', {
+                className: 'time-input',
+                type: 'number',
+                min: 1,
+                max: 240,
+                value: Math.floor(time / 60),
+                onChange: (e) => {
+                    const val = Math.min(240, Math.max(1, parseInt(e.target.value) || 1));
+                    setTime(val * 60);
+                }
+            }),
+
+            React.createElement('div', { className: 'soft-note' },
+                Math.floor(time / 60) > 120
+                    ? "that’s a long session… don’t forget to breathe ✿"
+                    : "steady pace is enough ✿"
+            )
+        )
     );
-};
-
-const SubjectChip = ({ s, selected, setSelected, onLongPress }) => {
-    const [removing, setRemoving] = useState(false);
-    
-    // We handle the local "removing" state for the fade-out animation
-    const handleLongPress = () => {
-        onLongPress(s, () => setRemoving(true));
-    };
-
-    const longPressProps = useLongPress(handleLongPress, () => {
-        setSelected(s);
-        playSound('clickSound');
-    });
-
-    return React.createElement('div', {
-        className: `sub ${selected && selected.id === s.id ? 'active' : ''} ${removing ? 'removing' : ''}`,
-        ...longPressProps
-    }, s.name);
 };
 
 // --- MAIN APP ---
 const App = () => {
+
+    const [mode, setMode] = useState("work");
+    const [cycle, setCycle] = useState(1);
+
     const [screen, setScreen] = useState("home");
-    
-    // Lifted State for Optimization
-    const [subjects, setSubjects] = useState(() => {
-        const saved = safeJSON("subjects", []);
-        if (saved.length === 0) return [
-            { id: '1', name: 'science' },
-            { id: '2', name: 'math' }
-        ];
-        // Migration check: if saved items are strings, convert to objects
-        if (typeof saved[0] === 'string') {
-            return saved.map((s, i) => ({ id: i.toString(), name: s }));
-        }
-        return saved;
-    });
+
+    const [subjects, setSubjects] = useState(() => safeJSON("subjects", []));
     const [selected, setSelected] = useState(subjects[0] || null);
-    const [time, setTime] = useState(1500);
+
+    const [time, setTime] = useState(Number(localStorage.getItem("customTime")) || 1500);
     const [running, setRunning] = useState(false);
-    
+
     const [streak, setStreak] = useState(Number(localStorage.getItem("streak")) || 0);
     const [lastStudy, setLastStudy] = useState(localStorage.getItem("lastStudy") || "");
+
     const [dailyGoal, setDailyGoal] = useState(Number(localStorage.getItem("dailyGoal")) || 60);
     const [todayMinutes, setTodayMinutes] = useState(Number(localStorage.getItem("todayMinutes")) || 0);
     const [todayDate, setTodayDate] = useState(localStorage.getItem("todayDate") || "");
 
-    // Initialization & Persistence
     useEffect(() => {
         const today = new Date().toDateString();
         if (todayDate !== today) {
             setTodayMinutes(0);
             setTodayDate(today);
-            localStorage.setItem("todayDate", today);
         }
     }, []);
 
     useEffect(() => {
         localStorage.setItem("subjects", JSON.stringify(subjects));
-        localStorage.setItem("streak", streak);
-        localStorage.setItem("lastStudy", lastStudy);
-        localStorage.setItem("dailyGoal", dailyGoal);
-        localStorage.setItem("todayMinutes", todayMinutes);
-    }, [subjects, streak, lastStudy, dailyGoal, todayMinutes]);
+    }, [subjects]);
 
-    // Timer Logic
     useEffect(() => {
         let interval;
+
         if (running && time > 0) {
-            interval = setInterval(() => {
-                setTime(t => t - 1);
-            }, 1000);
+            interval = setInterval(() => setTime(t => t - 1), 1000);
         } else if (time === 0) {
-            setRunning(false);
-            completeSession();
-            setTime(1500);
+            handleSessionEnd();
         }
+
         return () => clearInterval(interval);
     }, [running, time]);
 
+    const handleSessionEnd = () => {
+        setRunning(false);
+
+        if (mode === "work") {
+            completeSession();
+
+            const nextCycle = cycle + 1;
+            setCycle(nextCycle);
+
+            const isLongBreak = nextCycle % 4 === 0;
+            setTime(isLongBreak ? 900 : 300);
+            setMode("break");
+        } else {
+            setTime(Number(localStorage.getItem("customTime")) || 1500);
+            setMode("work");
+        }
+    };
+
+    useEffect(() => {
+        if (mode === "work") {
+            localStorage.setItem("customTime", time);
+        }
+    }, [time]);
+
     const completeSession = () => {
         playSound('doneSound');
-        const today = new Date().toDateString();
-        
-        if (lastStudy !== today) {
-            setStreak(s => s + 1);
-            setLastStudy(today);
-        }
-        
         setTodayMinutes(m => m + 25);
-        
-        const day = new Date().toLocaleDateString("en-US", { weekday: "short" });
-        const weekly = safeJSON("weekly", {});
-        weekly[day] = (weekly[day] || 0) + 25;
-        localStorage.setItem("weekly", JSON.stringify(weekly));
-        
-        // Notification attempt
-        if ("Notification" in window && Notification.permission === "granted") {
-            new Notification("Session Complete!", { body: "Great job! Time for a break." });
-        }
     };
 
     const formatTime = (t) => {
@@ -303,69 +284,19 @@ const App = () => {
         return `${m}:${s.toString().padStart(2, "0")}`;
     };
 
-    const sharedProps = {
-        screen, setScreen,
-        time, setTime,
-        running, setRunning,
-        formatTime,
-        subjects, setSubjects,
-        selected, setSelected,
-        streak, dailyGoal, setDailyGoal, todayMinutes
-    };
-
-    const [modal, setModal] = useState({ open: false, subject: '', copy: copyOptions[0], onConfirm: null });
-    const [toast, setToast] = useState('');
-
-    const showToast = (msg) => {
-        setToast(msg);
-        setTimeout(() => setToast(''), 2500);
-    };
-
-    const confirmRemove = (sub, animateOut) => {
-        const copy = copyOptions[Math.floor(Math.random() * copyOptions.length)];
-        setModal({
-            open: true,
-            subject: sub.name,
-            copy: copy,
-            onConfirm: () => {
-                animateOut();
-                setTimeout(() => {
-                    setSubjects(prev => {
-                        const next = prev.filter(s => s.id !== sub.id);
-                        if (selected && selected.id === sub.id) setSelected(next[0] || null);
-                        return next;
-                    });
-                    showToast(`${sub.name} removed ✿`);
-                }, 300);
-                setModal({ ...modal, open: false });
-            }
-        });
-    };
-
-    return React.createElement('div', { className: `app screen-${screen}` },
-        screen === "home" && React.createElement(Home, { 
-            ...sharedProps,
-            onRemove: confirmRemove
+    return React.createElement('div', { className: `app ${mode === "break" ? 'break-mode' : ''}` },
+        screen === "home" && React.createElement(Home, {
+            setScreen, time, running, setRunning, setTime,
+            formatTime, subjects, setSubjects, selected, setSelected,
+            streak, dailyGoal, setDailyGoal, todayMinutes,
+            mode, cycle
         }),
-        screen === "focus" && React.createElement(Focus, sharedProps),
-        screen === "stats" && React.createElement(Stats, sharedProps),
-
-        // Modal
-        modal.open && React.createElement('div', { className: 'modal-overlay', onClick: () => setModal({ ...modal, open: false }) },
-            React.createElement('div', { className: 'modal', onClick: e => e.stopPropagation() },
-                React.createElement('div', { className: 'modal-title' }, modal.copy.text(modal.subject)),
-                React.createElement('div', { className: 'modal-btns' },
-                    React.createElement('button', { className: 'btn', onClick: () => setModal({ ...modal, open: false }) }, modal.copy.no),
-                    React.createElement('button', { className: 'btn btn-primary', onClick: modal.onConfirm }, modal.copy.yes)
-                )
-            )
-        ),
-
-        // Toast
-        toast && React.createElement('div', { className: 'toast' }, toast)
+        screen === "focus" && React.createElement(Focus, {
+            setScreen, time, running, setRunning, setTime, formatTime, mode
+        }),
+        screen === "stats" && React.createElement(Stats, { setScreen })
     );
 };
 
-// Render
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(React.createElement(App));
